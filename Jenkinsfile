@@ -1,25 +1,22 @@
 pipeline {
     agent any
+    
     stages {
         stage('Checkout') {
             steps {
                 checkout scm
             }
         }
-        stage('Build and Push Frontend Image') {
+        
+        stage('Build Frontend') {
             steps {
                 dir('frontend') {
-                    script {
-                        def frontendImage = docker.build("omardibba/crowdfunding-frontend:${BUILD_NUMBER}")
-                        withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                            sh "echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin"
-                            frontendImage.push()
-                            frontendImage.push('latest')
-                        }
-                    }
+                    sh 'yarn install'
+                    sh 'yarn build'
                 }
             }
         }
+        
         stage('Test Smart Contracts') {
             steps {
                 dir('blockchain') {
@@ -28,10 +25,31 @@ pipeline {
                 }
             }
         }
+        
+        stage('Build and Push Docker Image') {
+            steps {
+                script {
+                    docker.build("omardibba/crowdfunding-frontend:${env.BUILD_NUMBER}")
+                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-credentials') {
+                        docker.image("omardibba/crowdfunding-frontend:${env.BUILD_NUMBER}").push()
+                    }
+                }
+            }
+        }
+        
         stage('Deploy to Kubernetes') {
             steps {
-                sh 'kubectl apply -f k8s/'
+                sh "kubectl set image deployment/frontend frontend=omardibba/crowdfunding-frontend:${env.BUILD_NUMBER}"
             }
+        }
+    }
+    
+    post {
+        success {
+            echo 'Build successful! Notify team...'
+        }
+        failure {
+            echo 'Build failed! Notify team...'
         }
     }
 }
