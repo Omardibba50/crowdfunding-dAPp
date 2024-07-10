@@ -1,25 +1,25 @@
-require("@nomiclabs/hardhat-waffle");
+require("@nomicfoundation/hardhat-toolbox");
 require('dotenv').config();
 
-task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
-  const accounts = await hre.ethers.getSigners();
+const PRIVATE_KEY = process.env.PRIVATE_KEY;
+const POLYGON_AMOY_RPC_URL = process.env.POLYGON_AMOY_RPC_URL;
 
-  for (const account of accounts) {
-    console.log(account.address);
-  }
-})
-
-const PRIVATE_KEY = process.env.POLYGON_PRIVATE_KEY
-const RPC_URL = process.env.POLYGON_RPC_URL
+if (!PRIVATE_KEY || !POLYGON_AMOY_RPC_URL) {
+  console.error("Please set your PRIVATE_KEY and POLYGON_AMOY_RPC_URL in a .env file");
+  process.exit(1);
+}
 
 module.exports = {
   solidity: "0.8.10",
-  defaultNetwork: "polygon",
+  defaultNetwork: "polygon_amoy",
   networks: {
     hardhat: {},
-    polygon: {
-      url: RPC_URL,
-      accounts: [PRIVATE_KEY]
+    polygon_amoy: {
+      url: POLYGON_AMOY_RPC_URL,
+      chainId: 80002,
+      accounts: [`0x${PRIVATE_KEY}`],
+      gasPrice: 30000000000, // Reduced to 30 gwei
+      gas: 2100000,
     }
   }
 };
