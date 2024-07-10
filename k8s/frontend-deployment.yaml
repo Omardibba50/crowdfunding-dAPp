@@ -17,4 +17,4 @@ spec:
       - name: frontend
         image: omardibba/crowdfunding-frontend:latest
         ports:
-        - containerPort: 3000" > k8s/frontend-deployment.yaml
+        - containerPort: 3000
