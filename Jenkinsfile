@@ -1,6 +1,10 @@
 pipeline {
     agent any
     
+    tools {
+        nodejs 'Node14'  // Make sure you have Node.js installed in Jenkins
+    }
+    
     stages {
         stage('Checkout') {
             steps {
@@ -11,6 +15,7 @@ pipeline {
         stage('Build Frontend') {
             steps {
                 dir('frontend') {
+                    sh 'npm install -g yarn'  // Install yarn if not available
                     sh 'yarn install'
                     sh 'yarn build'
                 }
@@ -29,7 +34,7 @@ pipeline {
         stage('Build and Push Docker Image') {
             steps {
                 script {
-                    docker.build("omardibba/crowdfunding-frontend:${env.BUILD_NUMBER}")
+                    docker.build("omardibba/crowdfunding-frontend:${env.BUILD_NUMBER}", "./frontend")
                     docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-credentials') {
                         docker.image("omardibba/crowdfunding-frontend:${env.BUILD_NUMBER}").push()
                     }
@@ -39,7 +44,8 @@ pipeline {
         
         stage('Deploy to Kubernetes') {
             steps {
-                sh "kubectl set image deployment/frontend frontend=omardibba/crowdfunding-frontend:${env.BUILD_NUMBER}"
+                sh "kubectl apply -f k8s/"
+                sh "kubectl set image deployment/frontend frontend=omardibba/crowdfunding-frontend:${env.BUILD_NUMBER} -n default"
             }
         }
     }
