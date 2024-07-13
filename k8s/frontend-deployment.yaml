@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend
-  namespace: default
+  name: crowdfunding-frontend
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: frontend
+      app: crowdfunding-frontend
   template:
     metadata:
       labels:
-        app: frontend
+        app: crowdfunding-frontend
     spec:
+      serviceAccountName: crowdfunding-ksa
       containers:
-      - name: frontend
-        image: omardibba/crowdfunding-frontend:latest
+      - name: crowdfunding-frontend
+        image: gcr.io/botma-chatbot/crowdfunding-frontend:latest
         ports:
-        - containerPort: 3000
+        - containerPort: 80

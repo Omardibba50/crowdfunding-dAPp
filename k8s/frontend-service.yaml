@@ -1,12 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: frontend
-  namespace: default
+  name: crowdfunding-frontend
 spec:
-  selector:
-    app: frontend
+  type: LoadBalancer
   ports:
   - port: 80
-    targetPort: 3000
-  type: LoadBalancer
+    targetPort: 80
+  selector:
+    app: crowdfunding-frontend
