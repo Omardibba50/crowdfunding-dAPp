@@ -21,12 +21,17 @@ pipeline {
             }
         }
         
-        stage('Deploy Smart Contract') {
+       stage('Deploy Smart Contract') {
             steps {
                 dir('blockchain') {
                     sh 'yarn install'
                     sh 'npx hardhat compile'
-                    sh 'npx hardhat run scripts/deploy.js --network polygon_mumbai'
+                    withCredentials([
+                        string(credentialsId: 'polygon-amoy-rpc-url', variable: 'POLYGON_AMOY_RPC_URL'),
+                        string(credentialsId: 'polygon-private-key', variable: 'PRIVATE_KEY')
+                    ]) {
+                        sh 'npx hardhat run scripts/deploy.js --network polygon_amoy'
+                    }
                 }
             }
         }
