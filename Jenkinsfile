@@ -38,13 +38,14 @@ pipeline {
         }
     }
 }
-        stage('Build and Push Docker Image') {
-            steps {
-                sh 'docker build -t localhost:5000/crowdfunding-frontend:${BUILD_NUMBER} frontend/.'
-                sh 'docker push localhost:5000/crowdfunding-frontend:${BUILD_NUMBER}'
-            }
+      stage('Build and Push Docker Image') {
+    steps {
+        dir('frontend') {
+            sh 'docker build -t localhost:5000/crowdfunding-frontend:${BUILD_NUMBER} .'
+            sh 'docker push localhost:5000/crowdfunding-frontend:${BUILD_NUMBER}'
         }
-        
+    }
+}
         stage('Deploy to Minikube') {
             steps {
                 withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
