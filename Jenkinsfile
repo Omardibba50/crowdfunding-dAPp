@@ -46,14 +46,7 @@ pipeline {
         }
     }
 }
-       Copystage('Deploy to Minikube') {
-    steps {
-        withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
-            sh 'kubectl --kubeconfig=$KUBECONFIG get nodes'
-            sh 'kubectl --kubeconfig=$KUBECONFIG apply -f k8s/'
-        }
-    }
-}
+       
     }
     
     post {
