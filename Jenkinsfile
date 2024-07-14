@@ -47,7 +47,7 @@ pipeline {
             }
         }
 
-        stage('Deploy to Minikube') {
+       stage('Deploy to Minikube') {
     steps {
         withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
             sh '''
@@ -56,8 +56,8 @@ pipeline {
                 echo "KUBECONFIG file path: $KUBECONFIG"
                 ls -l $KUBECONFIG
                 file $KUBECONFIG
-                echo "First few lines of KUBECONFIG:"
-                head -n 10 $KUBECONFIG
+                echo "Entire KUBECONFIG content:"
+                cat $KUBECONFIG
                 echo "Kubectl config view:"
                 kubectl config view --raw
             '''
