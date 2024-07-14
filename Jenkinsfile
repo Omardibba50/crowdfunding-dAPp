@@ -3,13 +3,35 @@ pipeline {
     
     environment {
         KUBECONFIG = credentials('kubeconfig')
-        DOCKER_REGISTRY = "localhost:5000"  // Changed from host.docker.internal to localhost
+        DOCKER_REGISTRY = "host.docker.internal:5000"
     }
     
     stages {
         stage('Checkout') {
             steps {
                 checkout scm
+            }
+        }
+        
+        stage('Docker Registry Diagnostics') {
+            steps {
+                sh 'docker info'
+                sh 'docker ps | grep registry || true'
+                sh 'curl -v http://${DOCKER_REGISTRY}/v2/ || true'
+            }
+        }
+        
+        stage('Ensure Docker Registry is Accessible') {
+            steps {
+                script {
+                    sh '''
+                    if ! curl -s -f http://${DOCKER_REGISTRY}/v2/ > /dev/null; then
+                        echo "Cannot access Docker registry at ${DOCKER_REGISTRY}"
+                        echo "Please ensure the registry is running and accessible"
+                        exit 1
+                    fi
+                    '''
+                }
             }
         }
         
@@ -67,6 +89,8 @@ pipeline {
     post {
         always {
             sh 'rm -f $KUBECONFIG'
+            sh 'docker images'
+            sh 'docker ps -a'
         }
     }
 }
