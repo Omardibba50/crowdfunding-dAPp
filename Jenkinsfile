@@ -38,11 +38,11 @@ pipeline {
         }
     }
 }
-      stage('Build and Push Docker Image') {
+    stage('Build and Push Docker Image') {
     steps {
         dir('frontend') {
-            sh 'docker build -t localhost:5000/crowdfunding-frontend:${BUILD_NUMBER} .'
-            sh 'docker push localhost:5000/crowdfunding-frontend:${BUILD_NUMBER}'
+            sh 'docker build -t host.docker.internal:5000/crowdfunding-frontend:${BUILD_NUMBER} .'
+            sh 'docker push host.docker.internal:5000/crowdfunding-frontend:${BUILD_NUMBER}'
         }
     }
 }

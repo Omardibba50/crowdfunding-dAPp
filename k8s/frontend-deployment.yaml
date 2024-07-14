@@ -15,6 +15,6 @@ spec:
       serviceAccountName: crowdfunding-ksa
       containers:
       - name: crowdfunding-frontend
-        image: gcr.io/botma-chatbot/crowdfunding-frontend:latest
+        image: host.docker.internal:5000/crowdfunding-frontend:${BUILD_NUMBER}
         ports:
         - containerPort: 80
