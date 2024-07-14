@@ -48,33 +48,22 @@ pipeline {
         }
 
         stage('Deploy to Minikube') {
-            steps {
-                withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
-                    sh '''
-                        set -e
-                        export KUBECONFIG=$KUBECONFIG
-                        
-                        echo "Kubectl version:"
-                        kubectl version --client
-                        
-                        echo "Minikube version:"
-                        minikube version
-                        
-                        echo "Kubeconfig file content:"
-                        cat $KUBECONFIG
-                        
-                        echo "Kubectl config view:"
-                        kubectl config view
-                        
-                        echo "Applying Kubernetes manifests:"
-                        kubectl apply -f k8s/
-                        
-                        echo "Updating deployment image:"
-                        kubectl set image deployment/crowdfunding-frontend crowdfunding-frontend=localhost:5000/crowdfunding-frontend:${BUILD_NUMBER}
-                    '''
-                }
-            }
+    steps {
+        withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
+            sh '''
+                set -x
+                export KUBECONFIG=$KUBECONFIG
+                echo "KUBECONFIG file path: $KUBECONFIG"
+                ls -l $KUBECONFIG
+                file $KUBECONFIG
+                echo "First few lines of KUBECONFIG:"
+                head -n 10 $KUBECONFIG
+                echo "Kubectl config view:"
+                kubectl config view --raw
+            '''
         }
+    }
+}
     }
     
     post {
