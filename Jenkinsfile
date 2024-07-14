@@ -54,37 +54,39 @@ pipeline {
             }
         }
         
-        stage('Deploy to Minikube') {
-            steps {
-                withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
-                    sh '''
-                        export KUBECONFIG=$KUBECONFIG
-                        
-                        echo "Kubectl version:"
-                        kubectl version --client
-                        
-                        echo "Updating deployment YAML:"
-                        sed -i "s|image: .*|image: ${DOCKER_IMAGE}:${BUILD_NUMBER}|" k8s/frontend-deployment.yaml
-                        
-                        echo "Applying Kubernetes manifests:"
-                        kubectl apply -f k8s/frontend-deployment.yaml
-                        kubectl apply -f k8s/frontend-service.yaml
-                        
-                        echo "Waiting for deployment to be ready:"
-                        kubectl rollout status deployment/crowdfunding-frontend --timeout=300s
-                        
-                        echo "Checking pods:"
-                        kubectl get pods
-                        
-                        echo "Checking services:"
-                        kubectl get services
-                        
-                        echo "Service URL:"
-                        minikube service crowdfunding-frontend --url
-                    '''
-                }
-            }
+       stage('Deploy to Minikube') {
+    steps {
+        withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
+            sh '''
+                export KUBECONFIG=$KUBECONFIG
+                
+                echo "Kubectl version:"
+                kubectl version --client
+                
+                echo "Updating deployment YAML:"
+                sed -i "s|image: .*|image: ${DOCKER_IMAGE}:${BUILD_NUMBER}|" k8s/frontend-deployment.yaml
+                
+                echo "Applying Kubernetes manifests:"
+                kubectl apply -f k8s/frontend-deployment.yaml
+                kubectl apply -f k8s/frontend-service.yaml
+                
+                echo "Waiting for deployment to be ready:"
+                kubectl rollout status deployment/crowdfunding-frontend --timeout=300s
+                
+                echo "Checking pods:"
+                kubectl get pods
+                
+                echo "Checking services:"
+                kubectl get services
+                
+                echo "Service details:"
+                kubectl get service crowdfunding-frontend -o wide
+                
+                echo "To access the service, use: <cluster-ip>:<node-port>"
+            '''
         }
+    }
+}
     }
     
     post {
