@@ -8,4 +8,4 @@ spec:
   - port: 80
     targetPort: 3000
   selector:
-    app: crowdfunding-frontend
+    app: crowdfunding-frontendgi
