@@ -12,9 +12,8 @@ spec:
       labels:
         app: crowdfunding-frontend
     spec:
-      serviceAccountName: crowdfunding-ksa
       containers:
       - name: crowdfunding-frontend
-        image: host.docker.internal:5000/crowdfunding-frontend:${BUILD_NUMBER}
+        image: localhost:5000/crowdfunding-frontend:${BUILD_NUMBER}
         ports:
         - containerPort: 80

@@ -46,46 +46,35 @@ pipeline {
                 }
             }
         }
-stage('Validate Kubeconfig') {
-    steps {
-        withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
-            sh '''
-                python3 -c "
-import yaml
-import sys
 
-try:
-    with open('$KUBECONFIG', 'r') as f:
-        yaml.safe_load(f)
-    print('YAML is valid')
-except yaml.YAMLError as e:
-    print('YAML is invalid')
-    print(e)
-    sys.exit(1)
-"
-            '''
+        stage('Deploy to Minikube') {
+            steps {
+                withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
+                    sh '''
+                        export KUBECONFIG=$KUBECONFIG
+                        
+                        echo "Kubectl version:"
+                        kubectl version --client
+                        
+                        echo "Applying Kubernetes manifests:"
+                        envsubst < k8s/deployment.yaml | kubectl apply -f -
+                        kubectl apply -f k8s/service.yaml
+                        
+                        echo "Waiting for deployment to be ready:"
+                        kubectl rollout status deployment/crowdfunding-frontend
+                        
+                        echo "Checking pods:"
+                        kubectl get pods
+                        
+                        echo "Checking services:"
+                        kubectl get services
+                        
+                        echo "Service URL:"
+                        minikube service crowdfunding-frontend --url
+                    '''
+                }
+            }
         }
-    }
-}
-
-       
-       stage('Deploy to Minikube') {
-    steps {
-        withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
-            sh '''
-                set -x
-                export KUBECONFIG=$KUBECONFIG
-                echo "KUBECONFIG file path: $KUBECONFIG"
-                ls -l $KUBECONFIG
-                file $KUBECONFIG
-                echo "Kubeconfig content character by character:"
-                cat -A $KUBECONFIG
-                echo "Kubectl config view:"
-                kubectl config view --raw
-            '''
-        }
-    }
-}
     }
     
     post {
