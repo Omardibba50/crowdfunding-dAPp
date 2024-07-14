@@ -3,6 +3,7 @@ pipeline {
     
     environment {
         KUBECONFIG = credentials('kubeconfig')
+        DOCKER_IMAGE = '192.168.68.78:5000/crowdfunding-frontend'
     }
     
     stages {
@@ -37,16 +38,18 @@ pipeline {
                 }
             }
         }
-
+        
         stage('Build and Push Docker Image') {
             steps {
                 dir('frontend') {
-                    sh 'docker build -t localhost:5000/crowdfunding-frontend:${BUILD_NUMBER} .'
-                    sh 'docker push localhost:5000/crowdfunding-frontend:${BUILD_NUMBER}'
+                    sh "docker build -t ${DOCKER_IMAGE}:${BUILD_NUMBER} ."
+                    sh "docker tag ${DOCKER_IMAGE}:${BUILD_NUMBER} ${DOCKER_IMAGE}:latest"
+                    sh "docker push ${DOCKER_IMAGE}:${BUILD_NUMBER}"
+                    sh "docker push ${DOCKER_IMAGE}:latest"
                 }
             }
         }
-
+        
         stage('Deploy to Minikube') {
             steps {
                 withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
@@ -56,12 +59,15 @@ pipeline {
                         echo "Kubectl version:"
                         kubectl version --client
                         
+                        echo "Updating deployment YAML:"
+                        sed -i "s|image: .*|image: ${DOCKER_IMAGE}:${BUILD_NUMBER}|" k8s/frontend-deployment.yaml
+                        
                         echo "Applying Kubernetes manifests:"
-                        envsubst < k8s/frontend-deployment.yaml | kubectl apply -f -
+                        kubectl apply -f k8s/frontend-deployment.yaml
                         kubectl apply -f k8s/frontend-service.yaml
                         
                         echo "Waiting for deployment to be ready:"
-                        kubectl rollout status deployment/crowdfunding-frontend
+                        kubectl rollout status deployment/crowdfunding-frontend --timeout=300s
                         
                         echo "Checking pods:"
                         kubectl get pods

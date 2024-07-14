@@ -1,4 +1,4 @@
-# Step 1: Build the React application
+# Build stage
 FROM node:18.17 as build
 
 WORKDIR /app
@@ -12,23 +12,22 @@ RUN npm install
 # Copy the rest of the application code
 COPY . .
 
-# Update browserslist db (optional)
-RUN npx browserslist@latest --update-db
-
-# Build the application
+# Build the Next.js application
 RUN npm run build
 
-# Export the application to static files
-RUN npm run export
+# Production stage
+FROM node:18.17-alpine
 
-# Step 2: Serve the application with Nginx
-FROM nginx:alpine
+WORKDIR /app
 
-# Copy the exported static files to the Nginx HTML directory
-COPY --from=build /app/out /usr/share/nginx/html
+# Copy built assets from the build stage
+COPY --from=build /app/.next ./.next
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/package.json ./package.json
+COPY --from=build /app/public ./public
 
-# Expose port 80
-EXPOSE 80
+# Expose the listening port
+EXPOSE 3000
 
-# Run Nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Run the application
+CMD ["npm", "start"]
