@@ -42,12 +42,11 @@ pipeline {
         stage('Build and Push Docker Image') {
             steps {
                 dir('frontend') {
-                    sh "docker build -t ${DOCKER_IMAGE}:${BUILD_NUMBER} ."
-                    sh "docker tag ${DOCKER_IMAGE}:${BUILD_NUMBER} ${DOCKER_IMAGE}:latest"
-                    
-                    // Add these lines
                     sh "mkdir -p ~/.docker"
                     sh "echo '{\"insecure-registries\" : [\"192.168.68.78:5000\"]}' > ~/.docker/config.json"
+                    
+                    sh "docker build -t ${DOCKER_IMAGE}:${BUILD_NUMBER} ."
+                    sh "docker tag ${DOCKER_IMAGE}:${BUILD_NUMBER} ${DOCKER_IMAGE}:latest"
                     
                     sh "docker push ${DOCKER_IMAGE}:${BUILD_NUMBER}"
                     sh "docker push ${DOCKER_IMAGE}:latest"
