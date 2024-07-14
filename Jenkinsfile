@@ -46,7 +46,29 @@ pipeline {
                 }
             }
         }
+stage('Validate Kubeconfig') {
+    steps {
+        withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
+            sh '''
+                python3 -c "
+import yaml
+import sys
 
+try:
+    with open('$KUBECONFIG', 'r') as f:
+        yaml.safe_load(f)
+    print('YAML is valid')
+except yaml.YAMLError as e:
+    print('YAML is invalid')
+    print(e)
+    sys.exit(1)
+"
+            '''
+        }
+    }
+}
+
+       
        stage('Deploy to Minikube') {
     steps {
         withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
@@ -56,8 +78,8 @@ pipeline {
                 echo "KUBECONFIG file path: $KUBECONFIG"
                 ls -l $KUBECONFIG
                 file $KUBECONFIG
-                echo "Entire KUBECONFIG content:"
-                cat $KUBECONFIG
+                echo "Kubeconfig content character by character:"
+                cat -A $KUBECONFIG
                 echo "Kubectl config view:"
                 kubectl config view --raw
             '''
