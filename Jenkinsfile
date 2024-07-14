@@ -57,8 +57,8 @@ pipeline {
                         kubectl version --client
                         
                         echo "Applying Kubernetes manifests:"
-                        envsubst < k8s/deployment.yaml | kubectl apply -f -
-                        kubectl apply -f k8s/service.yaml
+                        envsubst < k8s/frontend-deployment.yaml | kubectl apply -f -
+                        kubectl apply -f k8s/frontend-service.yaml
                         
                         echo "Waiting for deployment to be ready:"
                         kubectl rollout status deployment/crowdfunding-frontend
