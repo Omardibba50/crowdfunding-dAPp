@@ -2,8 +2,8 @@ pipeline {
     agent any
     
     environment {
-        KUBECONFIG = credentials('kubeconfig')
-        DOCKER_IMAGE = '192.168.68.78:5000/crowdfunding-frontend'
+        KUBECONFIG = credentials('do-kubeconfig')
+        DOCKER_IMAGE = 'omardibba/crowdfunding-frontend'
     }
     
     stages {
@@ -42,51 +42,45 @@ pipeline {
         stage('Build and Push Docker Image') {
             steps {
                 dir('frontend') {
-                    sh "mkdir -p ~/.docker"
-                    sh "echo '{\"insecure-registries\" : [\"192.168.68.78:5000\"]}' > ~/.docker/config.json"
-                    
-                    sh "docker build -t ${DOCKER_IMAGE}:${BUILD_NUMBER} ."
-                    sh "docker tag ${DOCKER_IMAGE}:${BUILD_NUMBER} ${DOCKER_IMAGE}:latest"
-                    
-                    sh "docker push ${DOCKER_IMAGE}:${BUILD_NUMBER}"
-                    sh "docker push ${DOCKER_IMAGE}:latest"
+                    withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                        sh "echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin"
+                        sh "docker build -t ${DOCKER_IMAGE}:${BUILD_NUMBER} ."
+                        sh "docker tag ${DOCKER_IMAGE}:${BUILD_NUMBER} ${DOCKER_IMAGE}:latest"
+                        sh "docker push ${DOCKER_IMAGE}:${BUILD_NUMBER}"
+                        sh "docker push ${DOCKER_IMAGE}:latest"
+                    }
                 }
             }
         }
         
-       stage('Deploy to Minikube') {
-    steps {
-        withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
-            sh '''
-                export KUBECONFIG=$KUBECONFIG
-                
-                echo "Kubectl version:"
-                kubectl version --client
-                
-                echo "Updating deployment YAML:"
-                sed -i "s|image: .*|image: ${DOCKER_IMAGE}:${BUILD_NUMBER}|" k8s/frontend-deployment.yaml
-                
-                echo "Applying Kubernetes manifests:"
-                kubectl apply -f k8s/frontend-deployment.yaml
-                kubectl apply -f k8s/frontend-service.yaml
-                
-                echo "Waiting for deployment to be ready:"
-                kubectl rollout status deployment/crowdfunding-frontend --timeout=300s
-                
-                echo "Checking pods:"
-                kubectl get pods
-                
-                echo "Checking services:"
-                kubectl get services
-                
-                echo "Service details:"
-                kubectl get service crowdfunding-frontend -o wide
-                
-                echo "To access the service, use: <cluster-ip>:<node-port>"
-            '''
+        stage('Deploy to DigitalOcean Kubernetes') {
+            steps {
+                withCredentials([file(credentialsId: 'do-kubeconfig', variable: 'KUBECONFIG')]) {
+                    sh '''
+                        export KUBECONFIG=$KUBECONFIG
+                        
+                        echo "Kubectl version:"
+                        kubectl version --client
+                        
+                        echo "Updating deployment YAML:"
+                        sed -i "s|image: .*|image: ${DOCKER_IMAGE}:${BUILD_NUMBER}|" k8s/frontend-deployment.yaml
+                        
+                        echo "Applying Kubernetes manifests:"
+                        kubectl apply -f k8s/frontend-deployment.yaml
+                        kubectl apply -f k8s/frontend-service.yaml
+                        
+                        echo "Waiting for deployment to be ready:"
+                        kubectl rollout status deployment/crowdfunding-frontend --timeout=300s
+                        
+                        echo "Checking pods:"
+                        kubectl get pods
+                        
+                        echo "Checking services:"
+                        kubectl get services
+                    '''
+                }
+            }
         }
-    }
-}
     }
     
     post {

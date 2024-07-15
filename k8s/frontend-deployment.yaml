@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: crowdfunding-frontend
-        image: 192.168.68.78:5000/crowdfunding-frontend:latest
+        image: omardibba/crowdfunding-frontend:latest
         ports:
         - containerPort: 3000
         resources:

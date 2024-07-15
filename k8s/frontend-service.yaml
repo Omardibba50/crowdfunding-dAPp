@@ -3,9 +3,9 @@ kind: Service
 metadata:
   name: crowdfunding-frontend
 spec:
-  type: NodePort
+  type: LoadBalancer
   ports:
   - port: 80
     targetPort: 3000
   selector:
-    app: crowdfunding-frontendgi
+    app: crowdfunding-frontend
