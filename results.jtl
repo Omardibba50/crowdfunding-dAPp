@@ -1,0 +1,41 @@
+timeStamp,elapsed,label,responseCode,responseMessage,threadName,dataType,success,failureMessage,bytes,sentBytes,grpThreads,allThreads,URL,Latency,IdleTime,Connect
+1721259287619,76,Homepage,200,OK,User Group 1-1,text,true,,11653,116,1,1,http://157.230.70.74/,69,0,39
+1721259287698,14,Past Campaigns,200,OK,User Group 1-1,text,true,,10126,128,1,1,http://157.230.70.74/pastcampigns,14,0,0
+1721259287713,10,Homepage,200,OK,User Group 1-1,text,true,,11653,116,1,1,http://157.230.70.74/,7,0,0
+1721259287723,9,Past Campaigns,200,OK,User Group 1-1,text,true,,10126,128,1,1,http://157.230.70.74/pastcampigns,8,0,0
+1721259288456,13,Homepage,200,OK,User Group 1-2,text,true,,11653,116,1,1,http://157.230.70.74/,13,0,4
+1721259288470,7,Past Campaigns,200,OK,User Group 1-2,text,true,,10126,128,1,1,http://157.230.70.74/pastcampigns,6,0,0
+1721259288477,7,Homepage,200,OK,User Group 1-2,text,true,,11653,116,1,1,http://157.230.70.74/,7,0,0
+1721259288484,6,Past Campaigns,200,OK,User Group 1-2,text,true,,10126,128,1,1,http://157.230.70.74/pastcampigns,6,0,0
+1721259289454,18,Homepage,200,OK,User Group 1-3,text,true,,11653,116,1,1,http://157.230.70.74/,17,0,5
+1721259289473,10,Past Campaigns,200,OK,User Group 1-3,text,true,,10126,128,1,1,http://157.230.70.74/pastcampigns,9,0,0
+1721259289483,7,Homepage,200,OK,User Group 1-3,text,true,,11653,116,1,1,http://157.230.70.74/,7,0,0
+1721259289490,7,Past Campaigns,200,OK,User Group 1-3,text,true,,10126,128,1,1,http://157.230.70.74/pastcampigns,7,0,0
+1721259290453,13,Homepage,200,OK,User Group 1-4,text,true,,11653,116,1,1,http://157.230.70.74/,13,0,5
+1721259290466,8,Past Campaigns,200,OK,User Group 1-4,text,true,,10126,128,1,1,http://157.230.70.74/pastcampigns,8,0,0
+1721259290475,6,Homepage,200,OK,User Group 1-4,text,true,,11653,116,1,1,http://157.230.70.74/,6,0,0
+1721259290482,7,Past Campaigns,200,OK,User Group 1-4,text,true,,10126,128,1,1,http://157.230.70.74/pastcampigns,6,0,0
+1721259291449,136,Homepage,200,OK,User Group 1-5,text,true,,11653,116,1,1,http://157.230.70.74/,136,0,5
+1721259291586,7,Past Campaigns,200,OK,User Group 1-5,text,true,,10126,128,1,1,http://157.230.70.74/pastcampigns,6,0,0
+1721259291593,7,Homepage,200,OK,User Group 1-5,text,true,,11653,116,1,1,http://157.230.70.74/,7,0,0
+1721259291601,6,Past Campaigns,200,OK,User Group 1-5,text,true,,10126,128,1,1,http://157.230.70.74/pastcampigns,6,0,0
+1721259292451,20,Homepage,200,OK,User Group 1-6,text,true,,11653,116,1,1,http://157.230.70.74/,20,0,10
+1721259292471,8,Past Campaigns,200,OK,User Group 1-6,text,true,,10126,128,1,1,http://157.230.70.74/pastcampigns,8,0,0
+1721259292479,7,Homepage,200,OK,User Group 1-6,text,true,,11653,116,1,1,http://157.230.70.74/,6,0,0
+1721259292486,6,Past Campaigns,200,OK,User Group 1-6,text,true,,10126,128,1,1,http://157.230.70.74/pastcampigns,6,0,0
+1721259293445,19,Homepage,200,OK,User Group 1-7,text,true,,11653,116,1,1,http://157.230.70.74/,19,0,9
+1721259293465,7,Past Campaigns,200,OK,User Group 1-7,text,true,,10126,128,1,1,http://157.230.70.74/pastcampigns,7,0,0
+1721259293473,125,Homepage,200,OK,User Group 1-7,text,true,,11653,116,1,1,http://157.230.70.74/,124,0,0
+1721259293599,8,Past Campaigns,200,OK,User Group 1-7,text,true,,10126,128,1,1,http://157.230.70.74/pastcampigns,7,0,0
+1721259294441,16,Homepage,200,OK,User Group 1-8,text,true,,11653,116,1,1,http://157.230.70.74/,15,0,5
+1721259294457,7,Past Campaigns,200,OK,User Group 1-8,text,true,,10126,128,1,1,http://157.230.70.74/pastcampigns,7,0,0
+1721259294464,9,Homepage,200,OK,User Group 1-8,text,true,,11653,116,1,1,http://157.230.70.74/,9,0,0
+1721259294473,9,Past Campaigns,200,OK,User Group 1-8,text,true,,10126,128,1,1,http://157.230.70.74/pastcampigns,7,0,0
+1721259295442,13,Homepage,200,OK,User Group 1-9,text,true,,11653,116,1,1,http://157.230.70.74/,13,0,6
+1721259295456,7,Past Campaigns,200,OK,User Group 1-9,text,true,,10126,128,1,1,http://157.230.70.74/pastcampigns,7,0,0
+1721259295463,6,Homepage,200,OK,User Group 1-9,text,true,,11653,116,1,1,http://157.230.70.74/,6,0,0
+1721259295470,6,Past Campaigns,200,OK,User Group 1-9,text,true,,10126,128,1,1,http://157.230.70.74/pastcampigns,6,0,0
+1721259296439,13,Homepage,200,OK,User Group 1-10,text,true,,11653,116,1,1,http://157.230.70.74/,13,0,4
+1721259296453,6,Past Campaigns,200,OK,User Group 1-10,text,true,,10126,128,1,1,http://157.230.70.74/pastcampigns,6,0,0
+1721259296460,6,Homepage,200,OK,User Group 1-10,text,true,,11653,116,1,1,http://157.230.70.74/,6,0,0
+1721259296467,7,Past Campaigns,200,OK,User Group 1-10,text,true,,10126,128,1,1,http://157.230.70.74/pastcampigns,7,0,0
